@@ -19,4 +19,5 @@ Osoba.objects.filter(druzyna__isnull=False).order_by().values('druzyna__nazwa').
 Druzyna.objects.order_by('-nazwa')
 
 o = Osoba(imie="Piotr", nazwisko="Piotrowski", miesiac_urodzenia="4")
+
 o.save()
