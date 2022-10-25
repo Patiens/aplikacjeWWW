@@ -21,3 +21,48 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.choice_text
+
+class Person(models.Model):
+    # lista wartości do wyboru w formie krotek
+    SHIRT_SIZES = (
+        ('S', 'Small'),
+        ('M', 'Medium'),
+        ('L', 'Large'),
+    )
+    name = models.CharField(max_length=60)
+    # wskazanie listy poprzez przypisanie do parametru choices
+    shirt_size = models.CharField(max_length=1, choices=SHIRT_SIZES)
+
+class Druzyna(models.Model):
+    nazwa = models.CharField(max_length=60)
+    kraj = models.CharField(max_length=2)
+    def __str__(self):
+        return self.nazwa + " " + self.kraj
+
+
+class Osoba(models.Model):
+    imie = models.CharField(max_length=60, null=False, blank=False)
+    nazwisko = models.CharField(max_length=60, null=False, blank=False)
+    class MIESIAC(models.IntegerChoices):
+        Styczen = 1
+        Luty = 2
+        Marzec = 3
+        Kwiecien = 4
+        Maj = 5
+        Czerwiec = 6
+        Lipiec = 7
+        Sierpien = 8
+        Wrzesien = 9
+        Pazdziernik = 10
+        Listopad = 11
+        Grudzien = 12
+
+    miesiac_urodzenia = models.IntegerField(choices=MIESIAC.choices, default=MIESIAC.choices[0])
+    # miesiac_urodzenia = models.CharField(max_length=2, choices=MIESIAC, default=MIESIAC[0][0])
+    data_dodania = models.DateField(auto_now_add=True)
+    druzyna = models.ForeignKey(Druzyna, null=True, on_delete=models.SET_NULL)
+    class Meta:
+        ordering = ["nazwisko"]
+
+    def __str__(self):
+        return self.imie + " " + self.nazwisko
