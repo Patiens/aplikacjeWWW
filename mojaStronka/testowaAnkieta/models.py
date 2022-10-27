@@ -40,27 +40,28 @@ class Druzyna(models.Model):
         return self.nazwa + " " + self.kraj
 
 
+class MIESIAC(models.IntegerChoices):
+    Styczen = 1
+    Luty = 2
+    Marzec = 3
+    Kwiecien = 4
+    Maj = 5
+    Czerwiec = 6
+    Lipiec = 7
+    Sierpien = 8
+    Wrzesien = 9
+    Pazdziernik = 10
+    Listopad = 11
+    Grudzien = 12
+
 class Osoba(models.Model):
     imie = models.CharField(max_length=60, null=False, blank=False)
     nazwisko = models.CharField(max_length=60, null=False, blank=False)
-    class MIESIAC(models.IntegerChoices):
-        Styczen = 1
-        Luty = 2
-        Marzec = 3
-        Kwiecien = 4
-        Maj = 5
-        Czerwiec = 6
-        Lipiec = 7
-        Sierpien = 8
-        Wrzesien = 9
-        Pazdziernik = 10
-        Listopad = 11
-        Grudzien = 12
-
     miesiac_urodzenia = models.IntegerField(choices=MIESIAC.choices, default=MIESIAC.choices[0])
     # miesiac_urodzenia = models.CharField(max_length=2, choices=MIESIAC, default=MIESIAC[0][0])
     data_dodania = models.DateField(auto_now_add=True)
     druzyna = models.ForeignKey(Druzyna, null=True, on_delete=models.SET_NULL)
+
     class Meta:
         ordering = ["nazwisko"]
 
