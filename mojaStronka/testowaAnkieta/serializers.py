@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Osoba, Druzyna, MIESIAC
+import datetime
+from django.utils import timezone
 
 class OsobaSerializer(serializers.Serializer):
 
@@ -24,6 +26,16 @@ class OsobaSerializer(serializers.Serializer):
         instance.save()
         return instance
 
+    def validate_imie(self, value):
+        if not value.isalpha():
+            raise serializers.ValidationError("Imie moze zawierac tylko litery",)
+        return value
+
+    def validate_data_dodania(self, data_dodania):
+        if data_dodania > datetime.date.today():
+            raise serializers.ValidationError("Data nie moze byc z przyszlosci")
+        return data_dodania
+
 class DruzynaSerializer(serializers.Serializer):
 
     id = serializers.IntegerField(read_only=True)
@@ -38,3 +50,4 @@ class DruzynaSerializer(serializers.Serializer):
         instance.kraj = validated_data.get("kraj", instance.kraj)
         instance.save()
         return instance
+
