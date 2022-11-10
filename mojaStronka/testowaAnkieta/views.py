@@ -42,6 +42,15 @@ def osoba_imie(request,imie):
         serializer = OsobaSerializer(osoba, many=True)
         return Response(serializer.data)
 
+@api_view(['POST'])
+def osoba_add(request):
+    if request.method == 'POST':
+        serializer = OsobaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET'])
 def druzyna_list(request):
     if request.method == 'GET':
@@ -71,3 +80,12 @@ def druzyna_detail(request, pk):
     elif request.method == 'DELETE':
         druzyna.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def druzyna_add(request):
+    if request.method == 'POST':
+        serializer = DruzynaSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
