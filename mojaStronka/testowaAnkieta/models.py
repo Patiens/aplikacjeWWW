@@ -2,7 +2,6 @@ from django.db import models
 import datetime
 from django.utils import timezone
 
-
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField('date published')
@@ -57,7 +56,7 @@ class MIESIAC(models.IntegerChoices):
 class Osoba(models.Model):
     imie = models.CharField(max_length=60, null=False, blank=False)
     nazwisko = models.CharField(max_length=60, null=False, blank=False)
-    miesiac_urodzenia = models.IntegerField(choices=MIESIAC.choices, default=MIESIAC.choices[0])
+    miesiac_urodzenia = models.IntegerField(choices=MIESIAC.choices, default=timezone.now().month)
     # miesiac_urodzenia = models.CharField(max_length=2, choices=MIESIAC, default=MIESIAC[0][0])
     data_dodania = models.DateField(auto_now_add=True)
     druzyna = models.ForeignKey(Druzyna, null=True, on_delete=models.SET_NULL)

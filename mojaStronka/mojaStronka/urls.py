@@ -19,4 +19,6 @@ from django.urls import path, include
 urlpatterns = [
     path('testowaAnkieta/', include('testowaAnkieta.urls')),
     path('admin/', admin.site.urls),
+    path('testowaAnkieta/osoby', include('rest_framework.urls')),
+    path('testowaAnkieta/druzyny', include('rest_framework.urls')),
 ]
