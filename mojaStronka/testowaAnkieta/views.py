@@ -1,55 +1,49 @@
+from django.http import Http404
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .models import Osoba, Druzyna, MIESIAC
 from .serializers import OsobaSerializer, DruzynaSerializer
 
-@api_view(['GET'])
-def osoba_list(request):
-    if request.method == 'GET':
+class OsobaList(APIView):
+    def get(self, request, format=None):
         osoby = Osoba.objects.all()
         serializer = OsobaSerializer(osoby, many=True)
         return Response(serializer.data)
 
-@api_view(['GET', 'PUT', 'DELETE'])
-def osoba_detail(request, pk):
-    try:
-        osoba = Osoba.objects.get(pk=pk)
-    except Osoba.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    def post(self, request, format=None):
+        serializer = SnippetSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class OsobaDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Osoba.objects.get(pk=pk)
+        except Osoba.DoesNotExist:
+            raise Http404
 
-    if request.method == 'GET':
-        osoba = Osoba.objects.get(pk=pk)
+    def get(self, request, pk, format=None):
+        osoba = self.get_object(pk)
         serializer = OsobaSerializer(osoba)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+    def put(self, request, pk, format=None):
+        osoba = self.get_object(pk)
         serializer = OsobaSerializer(osoba, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == 'DELETE':
+    def delete(self, request, pk, format=None):
+        osoba = self.get_object(pk)
         osoba.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-@api_view(['GET'])
-def osoba_imie(request,imie):
-    if request.method == 'GET':
-        osoba = Osoba.objects.filter(imie=imie)
-        serializer = OsobaSerializer(osoba, many=True)
-        return Response(serializer.data)
-
-@api_view(['POST'])
-def osoba_add(request):
-    if request.method == 'POST':
-        serializer = OsobaSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def druzyna_list(request):
