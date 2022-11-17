@@ -60,6 +60,7 @@ class Osoba(models.Model):
     # miesiac_urodzenia = models.CharField(max_length=2, choices=MIESIAC, default=MIESIAC[0][0])
     data_dodania = models.DateField(auto_now_add=True)
     druzyna = models.ForeignKey(Druzyna, null=True, on_delete=models.SET_NULL)
+    # wlasciciel = models.ForeignKey('auth.User', related_name='osoby', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ["nazwisko"]

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 urlpatterns = [
@@ -9,4 +9,7 @@ urlpatterns = [
     path('druzyny/<int:pk>/', views.druzyna_detail),
     path('osoby/osoby_add', views.osoba_add),
     path('druzyny/druzyny_add', views.druzyna_add),
+    path('osoby/update/<int:pk>/', views.osoba_update_delete),
+    path('osoby/delete/<int:pk>/', views.osoba_update_delete),
+    path('api-auth/', include('rest_framework.urls')),
 ]

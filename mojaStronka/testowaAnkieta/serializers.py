@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Osoba, Druzyna, MIESIAC
 import datetime
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class OsobaSerializer(serializers.Serializer):
 
@@ -50,4 +51,3 @@ class DruzynaSerializer(serializers.Serializer):
         instance.kraj = validated_data.get("kraj", instance.kraj)
         instance.save()
         return instance
-

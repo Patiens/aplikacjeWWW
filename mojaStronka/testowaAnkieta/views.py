@@ -1,9 +1,14 @@
 from django.shortcuts import render
-from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework import status, generics
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Osoba, Druzyna, MIESIAC
-from .serializers import OsobaSerializer, DruzynaSerializer
+from .serializers import OsobaSerializer, DruzynaSerializer, UserSerializer
+from django.contrib.auth.models import User
+from rest_framework import permissions
+
 
 @api_view(['GET'])
 def osoba_list(request):
@@ -11,8 +16,10 @@ def osoba_list(request):
         osoby = Osoba.objects.all()
         serializer = OsobaSerializer(osoby, many=True)
         return Response(serializer.data)
+def perform_create(self, serializer):
+    serializer.save(owner=self.request.user)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET'])
 def osoba_detail(request, pk):
     try:
         osoba = Osoba.objects.get(pk=pk)
@@ -24,7 +31,16 @@ def osoba_detail(request, pk):
         serializer = OsobaSerializer(osoba)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+@api_view(['PUT', 'DELETE'])
+# @authentication_classes([SessionAuthentication, BasicAuthentication])
+# @permission_classes([IsAuthenticated])
+def osoba_update_delete(request, pk):
+    try:
+        osoba = Osoba.objects.get(pk=pk)
+    except Osoba.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
         serializer = OsobaSerializer(osoba, data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -58,7 +74,7 @@ def druzyna_list(request):
         serializer = DruzynaSerializer(druzyny, many=True)
         return Response(serializer.data)
 
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET'])
 def druzyna_detail(request, pk):
     try:
         druzyna = Druzyna.objects.get(pk=pk)
@@ -70,7 +86,14 @@ def druzyna_detail(request, pk):
         serializer = DruzynaSerializer(druzyna)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+@api_view(['PUT', 'DELETE'])
+def druzyna_update_delete(request, pk):
+    try:
+        druzyna = Druzyna.objects.get(pk=pk)
+    except Druzyna.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'PUT':
         serializer = DruzynaSerializer(druzyna, data=request.data)
         if serializer.is_valid():
             serializer.save()
